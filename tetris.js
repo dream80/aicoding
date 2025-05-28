@@ -14,6 +14,7 @@ class TetrisGame {
         this.lastTime = 0;
         this.soundEnabled = true;
         this.musicEnabled = true;
+        this.leaderboard = [];
         
         // 音效和音乐
         this.sounds = {
@@ -104,7 +105,9 @@ class TetrisGame {
         this.createBoard();
         this.setupEventListeners();
         this.loadHighScore();
+        this.loadLeaderboard();
         this.updateDisplay();
+        this.updateLeaderboard();
     }
     
     createBoard() {
@@ -135,6 +138,14 @@ class TetrisGame {
         document.getElementById('restart-btn').addEventListener('click', () => this.restartGame());
         document.getElementById('sound-toggle').addEventListener('click', () => this.toggleSound());
         document.getElementById('music-toggle').addEventListener('click', () => this.toggleMusic());
+        document.getElementById('submit-score-btn').addEventListener('click', () => this.submitScore());
+        
+        // 用户名输入框回车事件
+        document.getElementById('player-name').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.submitScore();
+            }
+        });
         
         // 键盘事件
         document.addEventListener('keydown', (e) => this.handleKeyPress(e));
@@ -455,13 +466,15 @@ class TetrisGame {
         
         if (!this.nextPiece) return;
         
+        // 创建4x4网格，但使用更小的方块
         for (let row = 0; row < 4; row++) {
             for (let col = 0; col < 4; col++) {
                 const cell = document.createElement('div');
-                cell.className = 'tetris-block bg-gray-800';
+                cell.className = 'w-5 h-5 border border-gray-700';
+                cell.style.backgroundColor = '#1f2937'; // 默认背景色
                 
                 if (this.nextPiece.shape[row] && this.nextPiece.shape[row][col]) {
-                    cell.className = `tetris-block ${this.nextPiece.color}`;
+                    cell.className = `w-5 h-5 border border-gray-700 ${this.nextPiece.color}`;
                 }
                 
                 nextPieceElement.appendChild(cell);
@@ -535,17 +548,15 @@ class TetrisGame {
         this.backgroundMusic.pause();
         this.playSound('gameOver');
         
-        // 更新最高分
-        const highScore = parseInt(localStorage.getItem('tetris-high-score') || '0');
-        if (this.score > highScore) {
-            localStorage.setItem('tetris-high-score', this.score.toString());
-            document.getElementById('high-score').textContent = this.score;
-        }
-        
         // 显示游戏结束弹窗
         document.getElementById('final-score').textContent = this.score;
         document.getElementById('final-lines').textContent = this.lines;
         document.getElementById('game-over-modal').classList.remove('hidden');
+        
+        // 自动聚焦到用户名输入框
+        setTimeout(() => {
+            document.getElementById('player-name').focus();
+        }, 100);
         
         document.getElementById('start-btn').disabled = false;
         document.getElementById('pause-btn').disabled = true;
@@ -561,7 +572,95 @@ class TetrisGame {
     
     loadHighScore() {
         const highScore = localStorage.getItem('tetris-high-score') || '0';
+        const highScorePlayer = localStorage.getItem('tetris-high-score-player') || '匿名玩家';
         document.getElementById('high-score').textContent = highScore;
+        document.getElementById('high-score-player').textContent = highScorePlayer;
+    }
+    
+    loadLeaderboard() {
+        const savedLeaderboard = localStorage.getItem('tetris-leaderboard');
+        if (savedLeaderboard) {
+            this.leaderboard = JSON.parse(savedLeaderboard);
+        } else {
+            // 初始化默认排行榜
+            this.leaderboard = [
+                { name: '匿名玩家', score: 0, lines: 0, date: new Date().toLocaleDateString() }
+            ];
+        }
+    }
+    
+    saveLeaderboard() {
+        localStorage.setItem('tetris-leaderboard', JSON.stringify(this.leaderboard));
+    }
+    
+    updateLeaderboard() {
+        const leaderboardElement = document.getElementById('leaderboard');
+        leaderboardElement.innerHTML = '';
+        
+        // 按分数排序并取前10名
+        const sortedLeaderboard = this.leaderboard
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 10);
+        
+        sortedLeaderboard.forEach((entry, index) => {
+            const entryElement = document.createElement('div');
+            entryElement.className = 'flex justify-between items-center text-sm';
+            
+            const rankColor = index === 0 ? 'text-yellow-400' : 
+                            index === 1 ? 'text-gray-300' : 
+                            index === 2 ? 'text-orange-400' : 'text-gray-400';
+            
+            entryElement.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <span class="${rankColor} font-bold w-6">${index + 1}.</span>
+                    <span class="text-white truncate max-w-20" title="${entry.name}">${entry.name}</span>
+                </div>
+                <div class="text-cyan-400 font-bold">${entry.score}</div>
+            `;
+            
+            leaderboardElement.appendChild(entryElement);
+        });
+        
+        // 如果排行榜为空，显示提示
+        if (sortedLeaderboard.length === 0) {
+            leaderboardElement.innerHTML = '<div class="text-gray-500 text-center text-sm">暂无记录</div>';
+        }
+    }
+    
+    submitScore() {
+        const playerNameInput = document.getElementById('player-name');
+        const playerName = playerNameInput.value.trim() || '匿名玩家';
+        
+        // 添加到排行榜
+        const newEntry = {
+            name: playerName,
+            score: this.score,
+            lines: this.lines,
+            date: new Date().toLocaleDateString()
+        };
+        
+        this.leaderboard.push(newEntry);
+        
+        // 更新最高分记录
+        const currentHighScore = parseInt(localStorage.getItem('tetris-high-score') || '0');
+        if (this.score > currentHighScore) {
+            localStorage.setItem('tetris-high-score', this.score.toString());
+            localStorage.setItem('tetris-high-score-player', playerName);
+            this.loadHighScore();
+        }
+        
+        // 保存排行榜
+        this.saveLeaderboard();
+        this.updateLeaderboard();
+        
+        // 清空输入框并隐藏弹窗
+        playerNameInput.value = '';
+        document.getElementById('game-over-modal').classList.add('hidden');
+        
+        // 显示提交成功提示
+        const statusElement = document.getElementById('game-status');
+        statusElement.textContent = '成绩已提交！';
+        statusElement.className = 'text-lg font-bold text-green-400 pulse-animation';
     }
     
     toggleSound() {

@@ -470,8 +470,7 @@ class TetrisGame {
         for (let row = 0; row < 4; row++) {
             for (let col = 0; col < 4; col++) {
                 const cell = document.createElement('div');
-                cell.className = 'w-5 h-5 border border-gray-700';
-                cell.style.backgroundColor = '#1f2937'; // 默认背景色
+                cell.className = 'w-5 h-5 border border-gray-700 bg-gray-800';
                 
                 if (this.nextPiece.shape[row] && this.nextPiece.shape[row][col]) {
                     cell.className = `w-5 h-5 border border-gray-700 ${this.nextPiece.color}`;

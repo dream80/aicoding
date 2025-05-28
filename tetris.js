@@ -123,7 +123,7 @@ class TetrisGame {
                 
                 // 创建DOM元素
                 const cell = document.createElement('div');
-                cell.className = 'tetris-block bg-gray-800';
+                cell.className = 'tetris-block';
                 cell.id = `cell-${row}-${col}`;
                 boardElement.appendChild(cell);
             }
@@ -432,7 +432,7 @@ class TetrisGame {
         for (let row = 0; row < this.BOARD_HEIGHT; row++) {
             for (let col = 0; col < this.BOARD_WIDTH; col++) {
                 const cell = document.getElementById(`cell-${row}-${col}`);
-                cell.className = 'tetris-block bg-gray-800';
+                cell.className = 'tetris-block';
                 
                 // 绘制已放置的方块
                 if (this.board[row][col]) {

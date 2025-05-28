@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>俄罗斯方块 - Tetris</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        .game-font {
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .tetris-block {
+            width: 30px;
+            height: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+        
+        .game-board {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            border: 3px solid #00d4ff;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        }
+        
+        .neon-glow {
+            text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .block-i { background: linear-gradient(45deg, #00ffff, #0080ff); }
+        .block-o { background: linear-gradient(45deg, #ffff00, #ff8000); }
+        .block-t { background: linear-gradient(45deg, #ff00ff, #8000ff); }
+        .block-s { background: linear-gradient(45deg, #00ff00, #008000); }
+        .block-z { background: linear-gradient(45deg, #ff0000, #800000); }
+        .block-j { background: linear-gradient(45deg, #0000ff, #000080); }
+        .block-l { background: linear-gradient(45deg, #ff8000, #804000); }
+        
+        .game-container {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+        }
+    </style>
+</head>
+<body class="game-container h-screen overflow-hidden relative">
+    <!-- 左上角：最高记录 -->
+    <div class="absolute top-4 left-4 z-10">
+        <div class="bg-gray-900 rounded-lg p-4 border border-cyan-500">
+            <h3 class="text-lg font-bold text-cyan-400 mb-2 game-font flex items-center">
+                <i class="fas fa-crown mr-2"></i>最高记录
+            </h3>
+            <div class="text-center">
+                <div class="text-2xl font-bold text-yellow-400 game-font" id="high-score">0</div>
+                <div class="text-xs text-gray-400 mt-1">历史最高分</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 右上角：下一个方块 -->
+    <div class="absolute top-4 right-4 z-10">
+        <div class="bg-gray-900 rounded-lg p-4 border border-cyan-500">
+            <h3 class="text-lg font-bold text-cyan-400 mb-2 game-font flex items-center">
+                <i class="fas fa-eye mr-2"></i>下一个方块
+            </h3>
+            <div id="next-piece" class="grid grid-cols-4 gap-1 w-24 h-24 mx-auto"></div>
+        </div>
+    </div>
+    
+    <!-- 中央：游戏标题和游戏板 -->
+    <div class="h-full flex flex-col items-center justify-center">
+        <!-- 游戏标题 -->
+        <div class="text-center mb-4">
+            <h1 class="text-5xl font-bold text-cyan-400 neon-glow game-font mb-2">
+                <i class="fas fa-cube mr-3"></i>TETRIS<i class="fas fa-cube ml-3"></i>
+            </h1>
+        </div>
+        
+        <!-- 游戏面板 -->
+        <div id="game-board" class="game-board rounded-lg p-4">
+            <div id="board" class="grid grid-cols-10 gap-0"></div>
+        </div>
+        
+        <!-- 游戏统计 -->
+        <div class="mt-4 flex space-x-8 text-white game-font">
+            <div class="text-center">
+                <div class="text-sm text-gray-400">得分</div>
+                <div id="score" class="text-xl font-bold text-yellow-400">0</div>
+            </div>
+            <div class="text-center">
+                <div class="text-sm text-gray-400">等级</div>
+                <div id="level" class="text-xl font-bold text-green-400">1</div>
+            </div>
+            <div class="text-center">
+                <div class="text-sm text-gray-400">消除行数</div>
+                <div id="lines" class="text-xl font-bold text-red-400">0</div>
+            </div>
+            <div class="text-center">
+                <div class="text-sm text-gray-400">状态</div>
+                <div id="game-status" class="text-lg font-bold text-green-400 pulse-animation">准备开始</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 右下角：控制按钮和设置 -->
+    <div class="absolute bottom-4 right-4 z-10">
+        <div class="bg-gray-900 rounded-lg p-4 border border-cyan-500 space-y-4">
+            <!-- 游戏控制按钮 -->
+            <div class="flex flex-col space-y-2">
+                <button id="start-btn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-bold game-font transition-all duration-300 transform hover:scale-105 text-sm">
+                    <i class="fas fa-play mr-2"></i>开始游戏
+                </button>
+                <button id="pause-btn" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg font-bold game-font transition-all duration-300 transform hover:scale-105 text-sm" disabled>
+                    <i class="fas fa-pause mr-2"></i>暂停
+                </button>
+                <button id="reset-btn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-bold game-font transition-all duration-300 transform hover:scale-105 text-sm">
+                    <i class="fas fa-redo mr-2"></i>重置
+                </button>
+            </div>
+            
+            <!-- 音效控制 -->
+            <div class="border-t border-gray-700 pt-4">
+                <h4 class="text-sm font-bold text-cyan-400 mb-2 game-font flex items-center">
+                    <i class="fas fa-volume-up mr-2"></i>音效设置
+                </h4>
+                <div class="flex space-x-2">
+                    <button id="sound-toggle" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded transition-all duration-300 text-sm">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <button id="music-toggle" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded transition-all duration-300 text-sm">
+                        <i class="fas fa-music"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 控制说明 -->
+            <div class="border-t border-gray-700 pt-4">
+                <h4 class="text-sm font-bold text-cyan-400 mb-2 game-font flex items-center">
+                    <i class="fas fa-gamepad mr-2"></i>游戏控制
+                </h4>
+                <div class="space-y-1 text-xs text-gray-300">
+                    <div><i class="fas fa-arrow-left mr-1"></i>A/← : 左移</div>
+                    <div><i class="fas fa-arrow-right mr-1"></i>D/→ : 右移</div>
+                    <div><i class="fas fa-arrow-down mr-1"></i>S/↓ : 下移</div>
+                    <div><i class="fas fa-redo mr-1"></i>W/↑ : 旋转</div>
+                    <div><i class="fas fa-arrow-down mr-1"></i>空格 : 直接下落</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+        <!-- 游戏结束弹窗 -->
+        <div id="game-over-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden z-50">
+            <div class="bg-gray-900 rounded-lg p-8 border-2 border-red-500 text-center max-w-md">
+                <i class="fas fa-skull text-6xl text-red-500 mb-4"></i>
+                <h2 class="text-3xl font-bold text-red-400 mb-4 game-font">游戏结束</h2>
+                <div class="text-xl text-white mb-6 game-font">
+                    <div>最终得分: <span id="final-score" class="text-yellow-400 font-bold">0</span></div>
+                    <div>消除行数: <span id="final-lines" class="text-green-400 font-bold">0</span></div>
+                </div>
+                <button id="restart-btn" class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-bold game-font transition-all duration-300 transform hover:scale-105">
+                    <i class="fas fa-play mr-2"></i>重新开始
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="tetris.js"></script>
+</body>
+</html>

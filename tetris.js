@@ -432,11 +432,11 @@ class TetrisGame {
         for (let row = 0; row < this.BOARD_HEIGHT; row++) {
             for (let col = 0; col < this.BOARD_WIDTH; col++) {
                 const cell = document.getElementById(`cell-${row}-${col}`);
-                cell.className = 'w-7 h-7 border border-gray-700 bg-gray-800';
+                cell.className = 'w-7 h-7 border border-gray-600 bg-gray-800';
                 
                 // 绘制已放置的方块
                 if (this.board[row][col]) {
-                    cell.className = `w-7 h-7 border border-gray-700 ${this.board[row][col]}`;
+                    cell.className = `w-7 h-7 border ${this.board[row][col]}`;
                 }
             }
         }
@@ -452,7 +452,7 @@ class TetrisGame {
                         if (boardY >= 0 && boardY < this.BOARD_HEIGHT && 
                             boardX >= 0 && boardX < this.BOARD_WIDTH) {
                             const cell = document.getElementById(`cell-${boardY}-${boardX}`);
-                            cell.className = `w-7 h-7 border border-gray-700 ${this.currentPiece.color}`;
+                            cell.className = `w-7 h-7 border ${this.currentPiece.color}`;
                         }
                     }
                 }
@@ -470,10 +470,10 @@ class TetrisGame {
         for (let row = 0; row < 4; row++) {
             for (let col = 0; col < 4; col++) {
                 const cell = document.createElement('div');
-                cell.className = 'w-5 h-5 border border-gray-700 bg-gray-800';
+                cell.className = 'w-5 h-5 border border-gray-600 bg-gray-800';
                 
                 if (this.nextPiece.shape[row] && this.nextPiece.shape[row][col]) {
-                    cell.className = `w-5 h-5 border border-gray-700 ${this.nextPiece.color}`;
+                    cell.className = `w-5 h-5 border ${this.nextPiece.color}`;
                 }
                 
                 nextPieceElement.appendChild(cell);

@@ -1,0 +1,173 @@
+body {
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    display: flex;
+    gap: 20px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+}
+
+.game-info {
+    width: 200px;
+}
+
+h1 {
+    color: #333;
+    margin-top: 0;
+    font-size: 24px;
+}
+
+h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.score-container {
+    background-color: #f8f8f8;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.score-container p {
+    margin: 5px 0;
+    font-weight: bold;
+}
+
+.next-piece-container {
+    margin-bottom: 20px;
+}
+
+#next-piece {
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+}
+
+.game-board-container {
+    background-color: #f8f8f8;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#game-board {
+    border: 1px solid #ddd;
+    background-color: #fff;
+}
+
+.controls {
+    margin-bottom: 20px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#pause-btn {
+    background-color: #2196F3;
+}
+
+#pause-btn:hover {
+    background-color: #0b7dda;
+}
+
+#reset-btn {
+    background-color: #f44336;
+}
+
+#reset-btn:hover {
+    background-color: #d32f2f;
+}
+
+.instructions {
+    background-color: #f8f8f8;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.instructions p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+@media (max-width: 700px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .game-info {
+        width: 100%;
+        order: 2;
+    }
+    
+    .game-board-container {
+        order: 1;
+        margin-bottom: 20px;
+    }
+}
+/* 深色模式样式 */
+body.dark-mode {
+    background-color: #222;
+}
+
+.dark-mode .container {
+    background-color: #333;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode h1,
+.dark-mode h2 {
+    color: #f0f0f0;
+}
+
+.dark-mode .score-container,
+.dark-mode .next-piece-container,
+.dark-mode .instructions,
+.dark-mode .game-board-container {
+    background-color: #444;
+}
+
+.dark-mode .score-container p,
+.dark-mode .instructions p {
+    color: #ddd;
+}
+
+.dark-mode #game-board,
+.dark-mode #next-piece {
+    border-color: #555;
+    background-color: #333;
+}
+
+.dark-mode #mode-btn {
+    background-color: #555;
+}
+
+.dark-mode #mode-btn:hover {
+    background-color: #666;
+}

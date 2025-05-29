@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>俄罗斯方块 - 现代版 - Tony 制作</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body class="light-theme">
+    <div class="container">
+        <header class="game-header">
+            <h1>🎮 俄罗斯方块</h1>
+            <div class="theme-switch">
+                <input type="checkbox" id="theme-toggle">
+                <label for="theme-toggle" class="switch-label"></label>
+            </div>
+        </header>
+
+        <main class="game-container">
+            <div class="game-board-container">
+                <div id="game-board" class="game-board"></div>
+            </div>
+
+            <aside class="game-info">
+                <div class="info-panel">
+                    <h2><i class="fas fa-cube"></i> 下一个方块</h2>
+                    <div id="next-piece" class="next-piece-preview"></div>
+                </div>
+
+                <div class="info-panel stats-panel">
+                    <div class="stat-item">
+                        <h2><i class="fas fa-star"></i> 分数</h2>
+                        <div id="score" class="score">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <h2><i class="fas fa-chart-line"></i> 等级</h2>
+                        <div id="level" class="level">1</div>
+                    </div>
+                    <div class="stat-item">
+                        <h2><i class="fas fa-layer-group"></i> 行数</h2>
+                        <div id="lines" class="lines">0</div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button id="start-btn" class="btn"><i class="fas fa-play"></i> 开始游戏</button>
+                    <button id="pause-btn" class="btn" disabled><i class="fas fa-pause"></i> 暂停</button>
+                </div>
+
+                <div class="instructions">
+                    <h3><i class="fas fa-keyboard"></i> 操作说明</h3>
+                    <p><i class="fas fa-arrow-left"></i> <i class="fas fa-arrow-right"></i> 左右移动</p>
+                    <p><i class="fas fa-arrow-up"></i> 旋转</p>
+                    <p><i class="fas fa-arrow-down"></i> 加速下落</p>
+                    <p><i class="fas fa-space-bar"></i> Space 直接下落</p>
+                </div>
+            </aside>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

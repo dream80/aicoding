@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>现代风格俄罗斯方块</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body class="light-mode">
+    <div class="container">
+        <div class="game-header">
+            <h1>🎮 俄罗斯方块</h1>
+            <div class="theme-toggle">
+                <input type="checkbox" id="theme-switch" class="theme-switch">
+                <label for="theme-switch" class="theme-slider"></label>
+            </div>
+        </div>
+        
+        <div class="game-container">
+            <div class="game-area">
+                <div id="tetris-board" class="tetris-board"></div>
+            </div>
+            
+            <div class="game-info">
+                <div class="info-panel">
+                    <h2><i class="fas fa-cube"></i> 下一个</h2>
+                    <div id="next-piece" class="next-piece"></div>
+                </div>
+                
+                <div class="info-panel score-level-lines">
+                    <div>
+                        <h2><i class="fas fa-star"></i> 分数</h2>
+                        <div id="score" class="score">0</div>
+                    </div>
+                    
+                    <div>
+                        <h2><i class="fas fa-layer-group"></i> 等级</h2>
+                        <div id="level" class="level">1</div>
+                    </div>
+                    
+                    <div>
+                        <h2><i class="fas fa-list-ol"></i> 行数</h2>
+                        <div id="lines" class="lines">0</div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button id="start-btn" class="btn"><i class="fas fa-play"></i>开始</button>
+                    <button id="pause-btn" class="btn"><i class="fas fa-pause"></i> 暂停</button>
+                </div>
+                
+                <div class="instructions">
+                    <h3><i class="fas fa-keyboard"></i> 操作说明</h3>
+                    <p>← → : 左右移动</p>
+                    <p>↑ : 旋转</p>
+                    <p>↓ : 加速下落</p>
+                    <p>空格 : 直接下落</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
